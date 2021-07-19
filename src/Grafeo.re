@@ -7,8 +7,10 @@ type formo =
 type grafeo = 
     | BaseNode(string)
     | Node(string, string, formo)
+    | RecordNode(string, array((string, string)))
     | BaseConnection(grafeo, grafeo)
     | Connection(grafeo, grafeo, string)
+    | RecordConnection(string, string)
     | Subgraph(string, array(grafeo))
     | Digraph(string, array(grafeo))
     | GraphOption(string, string) /* not sure about this one, but for now it's not terrible... */
