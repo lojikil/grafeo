@@ -56,8 +56,16 @@ let rec dot_of_grafeo = (src:grafeo):string => {
     }
 }
 
-let rec plantuml_of_grafeo = (src:frafeo):string => {
-    ""
+let rec plantuml_of_grafeo = (src:grafeo):string => {
+    switch(src) {
+        | BaseNode(x) => "[" ++ x ++ "]"
+        | Node(name, label, _) => "[" ++ label ++ "] as " ++ name
+        | BaseConnection(startnode, endnode) => name_of_grafeo(startnode) ++ " -> " ++ name_of_grafeo(endnode)
+        | Connection(startnode, endnode, label) => name_of_grafeo(startnode) ++ " -> " ++ name_of_grafeo(endnode) ++ " : " ++ label
+        | Subgraph(name, nodes) => "node " ++ name ++ " {\n" ++ flatten_nodes(nodes, plantuml_of_grafeo) ++ "\n}\n"
+        | Digraph(_, nodes) => "@startuml\n" ++ flatten_nodes(nodes, plantuml_of_grafeo) ++ "\n@enduml\n"
+        | _ => "node"
+    }
 }
 
 let rec mermaid_of_grafeo = (src:grafeo):string => {
