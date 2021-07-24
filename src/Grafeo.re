@@ -69,5 +69,18 @@ let rec plantuml_of_grafeo = (src:grafeo):string => {
 }
 
 let rec mermaid_of_grafeo = (src:grafeo):string => {
-    ""
+    switch(src) {
+        | BaseNode(x) => x
+        | Node(name, label, shape) => switch(shape) {
+            | Mdiamond => name ++ "{" ++ label ++ "}"
+            | Square => name ++ "[" ++ label ++ "]"
+            | Normal => name ++ "([" ++ label ++ "])"
+            | _ => name ++ "(" ++ label ++ ")"
+        }
+        | BaseConnection(startnode, endnode) => name_of_grafeo(startnode) ++ " --> " ++ name_of_grafeo(endnode)
+        | Connection(startnode, endnode, label) => name_of_grafeo(startnode) ++ " --" ++ label ++ " --> " ++ name_of_grafeo(endnode)
+        | Subgraph(name, nodes) => "subgraph " ++ name ++ "\n" ++ flatten_nodes(nodes, mermaid_of_grafeo) ++ "\nend\n"
+        | Digraph(_, nodes) => "graph LR\n" ++ flatten_nodes(nodes, mermaid_of_grafeo)
+        | _ => "node"
+    }
 }
